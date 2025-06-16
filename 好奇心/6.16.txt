@@ -1,0 +1,42 @@
+环境变量
+
+1.用户环境变量 VS 系统环境变量
+	特性​		系统环境变量								用户环境变量
+​	作用范围​	所有用户									仅当前用户
+​	存储位置​	HKLM\...\Session Manager\Environment	HKCU\Environment
+​	修改权限​	需管理员权限								普通用户权限
+	
+​	同名覆盖优先级​	低于用户变量（非PATH）	高于系统变量（非PATH）
+	
+2.PATH VS CUDA_PATH
+​	特性​			PATH变量					CUDA_PATH类变量
+​	核心作用​		​搜索.exe					标记软件安装位置​
+​	直接影响范围​	cmd命令能否执行			提供目录下的库文件、头文件作为依赖
+​	值的内容​		多个路径的列表（用;分隔）	单个路径（通常指向根目录）
+	
+3.路径变量（CUDA_PATH）的命名规则
+​	1）合法字符​：
+	仅允许使用字母（A-Z, a-z）、数字（0-9）、下划线（_）​。
+​	禁止使用空格、连字符（-）、特殊符号（如@、#、$、%等）。
+
+​	2）开头字符​：
+	必须以字母或下划线开头，不能以数字开头（如123_PATH非法）。
+	
+​	3）区分大小写​：
+​	Windows​：变量名不区分大小写（如%PATH%和%Path%等效）。
+​	Linux/macOS​：严格区分大小写（如MY_VAR和my_var不同）。
+
+​	4）长度限制​：
+	无严格长度限制，但建议简洁（通常不超过255字符）。
+
+4.输出环境变量
+	path: 		where adb	
+	CUDA_PATH :	echo %CUDA_PATH%
+
+5.%CUDA_PATH%的生效范围：
+	1）​命令行/终端​：在 CMD、PowerShell 或 Linux Shell 中，可通过 %QT_PATH%（Windows）或 $QT_PATH（Linux）直接引用路径（如 cd %QT_PATH%\bin）。
+​	应用程序/IDE​：Qt Creator、Visual Studio 等 IDE 启动时会加载环境变量，可直接在项目配置中使用 QT_PATH。
+
+	2）非 Qt 程序（如 Python 脚本）可通过 os.getenv("QT_PATH") 读取其值。
+​
+	3）编译工具链​：Makefile、CMake 等可通过 $(QT_PATH) 或 $ENV{QT_PATH} 引用路径（例如指定头文件目录 -I$(QT_PATH)/include）。
